@@ -1,0 +1,58 @@
+# pyproject.toml
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+lint.select = ["F", "E", "W", "I001", "U", "N", "S", "B", "A", "C4", "T10", "ISC", "ICN", "T20", "Q", "RET", "SIM", "TID", "ERA"]
+lint.ignore = ["F821", "A003"]
+
+[tool.ruff.lint.per-file-ignores]
+
+"tests/**" = ["S101", "S311"]
+
+[tool.poetry]
+name = "magia-flow"
+version = "0.0.1"
+description = "Design flow integration and automation with Magia"
+readme = "README.md"
+authors = ["khwong-c64 <kin.hin.wong.c@gmail.com>"]
+license = "LICENSE"
+
+packages = [
+    { include = "magia_flow" },
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3"
+]
+keywords = [
+    "Verilog HDL", "SystemVerilog",
+    "Synthesizable", "RTL", "HDL", "Hardware Description Language",
+    "Code Generation", "FPGA", "ASIC", "EDA", "RTL Design"
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+magia-hdl = "~0.4"
+
+[tool.poetry.group.dev.dependencies]
+cocotb = "*"
+cocotb-test = "*"
+pytest = "*"
+pytest-xdist = "*"
+pytest-github-report = "*"
+ruff = "~0.2.1"
+hdlConvertor-binary = "~2.3"
+
+[tool.poetry.urls]
+Repository = "https://github.com/magia-hdl/magia-flow"
+
+[tool.pytest.ini_options]
+norecursedirs = "tests/helpers"
+log_cli = true  # turn to true to enable debug logging
