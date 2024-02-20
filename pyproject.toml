@@ -39,7 +39,7 @@ keywords = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-magia-hdl = "~0.4"
+magia-hdl = "~0.5"
 
 [tool.poetry.group.dev.dependencies]
 cocotb = "*"
