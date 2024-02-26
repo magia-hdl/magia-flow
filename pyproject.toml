@@ -15,7 +15,7 @@ lint.ignore = ["F821", "A003"]
 
 [tool.poetry]
 name = "magia-flow"
-version = "0.0.1"
+version = "0.1.0"
 description = "Design flow integration and automation with Magia"
 readme = "README.md"
 authors = ["khwong-c64 <kin.hin.wong.c@gmail.com>"]
