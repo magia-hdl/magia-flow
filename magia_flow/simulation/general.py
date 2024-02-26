@@ -18,8 +18,11 @@ class Simulator:
     ):
         self.simulator_type = simulator
         self.runner = cocotb.runner.get_runner(simulator)
-        self.build_dir = TemporaryDirectory(prefix="sim_magia_") if build_dir is None else build_dir
-        self.output_file = f"{self.build_dir.name}/magia.generated.sv"
+
+        self._temp_build_dir = TemporaryDirectory(prefix="sim_magia_") if build_dir is None else None
+        self.build_dir = self._temp_build_dir.name if build_dir is None else build_dir
+
+        self.output_file = f"{self.build_dir}/magia.generated.sv"
         self.top_level = hdl_toplevel
         self.source_files = []
         self.elaborated_sv = []
@@ -42,7 +45,7 @@ class Simulator:
             verilog_sources=self.source_files + [self.output_file],
             hdl_toplevel=self.top_level,
             always=True,
-            build_dir=self.build_dir.name,
+            build_dir=self.build_dir,
             **kwargs
         )
 
@@ -65,8 +68,8 @@ class Simulator:
                 hdl_toplevel=self.top_level,
                 test_module=test_module,
                 testcase=testcase,
-                build_dir=self.build_dir.name,
-                test_dir=self.build_dir.name,
+                build_dir=self.build_dir,
+                test_dir=self.build_dir,
                 results_xml="results.xml",
                 **kwargs
             )
@@ -74,7 +77,7 @@ class Simulator:
     @property
     def wave_file(self):
         if self.simulator_type == "verilator":
-            return Path(self.build_dir.name, "dump.fst")
+            return Path(self.build_dir, "dump.fst")
         raise NotImplementedError("Wave file not supported for this simulator")
 
     @staticmethod
