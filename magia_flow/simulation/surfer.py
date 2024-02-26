@@ -47,15 +47,27 @@ def install():
         with zipfile.ZipFile(byte_io) as z:
             try:
                 z.extractall(Path(sys.prefix, install_dir))
-            except PermissionError:
-                print("You may need root / Administrator privileges to install the Surfer.")
-                print("You can also install it using a virtual environment.")
-                raise
+            except PermissionError as err:
+                raise PermissionError(
+                    f"Failed to install the Surfer Binary to {str(Path(sys.prefix, install_dir))}"
+                    "You may need root / Administrator privileges to install the Surfer.\n"
+                    "You can also install it using a virtual environment."
+                ) from err
+
             if system == "Linux":
                 for name in z.namelist():
-                    os.chmod(Path(sys.prefix, install_dir, name), 0o755)
+                    os.chmod(Path(sys.prefix, install_dir, name), 0x755)
 
 
 def open_waveform(waveform):
     install()
-    subprocess.run(["surfer", waveform])
+    if not isinstance(waveform, os.PathLike):
+        raise TypeError(f"waveform must be a path-like object, not {type(waveform).__name__}")
+
+    waveform = str(waveform)
+    if not waveform.endswith(".vcd") and not waveform.endswith(".fst"):
+        raise ValueError(f"waveform must be a VCD or FST file, not {waveform}")
+    if not os.path.exists(waveform):
+        raise FileNotFoundError(f"waveform file not found: {waveform}")
+
+    subprocess.run([shutil.which("surfer"), waveform])  # noqa: S603
