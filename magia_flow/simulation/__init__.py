@@ -1,5 +1,4 @@
-from . import surfer
-from . import verilator
+from . import surfer, verilator
 from .general import Simulator
 
 __all__ = [
