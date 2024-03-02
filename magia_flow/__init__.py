@@ -1,5 +1,5 @@
-import oss_cad
-import simulation
+from . import oss_cad
+from . import simulation
 
 __all__ = [
     "oss_cad",
