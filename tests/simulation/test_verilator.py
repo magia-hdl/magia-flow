@@ -54,7 +54,7 @@ async def bundle_test(dut):
         assert (in_data + 6) == out_data, f"Expected {in_data + 6}, got {out_data}"
 
 
-def test_bundle_connections():
+def test_verilator_integration():
     top = "TopModule"
     width = 16
     data_bus_spec = valid_signal(width=width)
