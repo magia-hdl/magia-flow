@@ -1,7 +1,6 @@
 import click
 
-from magia_flow import oss_cad as flow_oss_cad
-from magia_flow.simulation import surfer as flow_surfer
+import magia_flow
 
 
 @click.group()
@@ -27,13 +26,13 @@ def install():
 @click.option("--pnr", is_flag=True, help="Install PnR Tools")
 def oss_cad(verilator, pnr):
     """Install OSS-CAD Suite"""
-    flow_oss_cad.install(verilator, pnr)
+    magia_flow.oss_cad.install(verilator, pnr)
 
 
 @install.command()
 def surfer():
     """Install Surfer"""
-    flow_surfer.install()
+    magia_flow.simulation.surfer.install()
 
 
 if __name__ == "__main__":
