@@ -1,5 +1,7 @@
+import subprocess
 import time
 import webbrowser
+from pathlib import Path
 
 import httpx
 from magia import Elaborator
@@ -42,3 +44,38 @@ def elaborate_on_digitaljs(*modules, server="https://digitaljs.tilk.eu"):
         raise RuntimeError(f"Failed to store circuit: {store_rsp.text}")
     store_rsp = store_rsp.json()
     webbrowser.open_new(f"{server}/#{store_rsp}")
+
+
+def start_local_server():
+    """
+    Start a local DigitalJS server.
+
+    This function requires docker compose installed.
+    """
+    work_dir = (Path(__file__).parent / "digitaljs").absolute()
+    use_new_docker_compose = False
+    use_old_docker_compose = False
+    try:
+        res = subprocess.run(["docker", "compose", "version"], capture_output=True, text=True)  # noqa: S603, S607
+        if res.returncode == 0:
+            use_new_docker_compose = True
+    except FileNotFoundError:
+        pass
+
+    if not use_new_docker_compose:
+        try:
+            res = subprocess.run(["docker-compose", "--version"], capture_output=True, text=True)  # noqa: S603, S607
+            if res.returncode == 0:
+                use_old_docker_compose = True
+        except FileNotFoundError:
+            pass
+
+    if not use_new_docker_compose and not use_old_docker_compose:
+        raise RuntimeError("docker compose is not installed")
+
+    if use_new_docker_compose:
+        subprocess.run(["docker", "compose", "up", "-d", "--build"], cwd=work_dir)  # noqa: S603, S607
+
+    if use_old_docker_compose:
+        subprocess.run(["docker-compose", "up", "-d", "--build"], cwd=work_dir)  # noqa: S603, S607
+    webbrowser.open_new("http://localhost:4000")

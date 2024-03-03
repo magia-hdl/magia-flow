@@ -35,5 +35,22 @@ def surfer():
     magia_flow.simulation.surfer.install()
 
 
+@cli.group()
+def online():
+    """
+    Online services
+
+    Elaborated SystemVerilog code will be sent to 3rd-party services.
+    Don't use this command if you are developing a proprietary IP or any closed-source project.
+    """
+    ...
+
+
+@online.command()
+def local_digitaljs():
+    """Start a local DigitalJS server"""
+    magia_flow.online.digitaljs.start_local_server()
+
+
 if __name__ == "__main__":
     cli()
