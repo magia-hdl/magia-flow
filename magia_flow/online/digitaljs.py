@@ -53,29 +53,34 @@ def start_local_server():
     This function requires docker compose installed.
     """
     work_dir = (Path(__file__).parent / "digitaljs").absolute()
-    use_new_docker_compose = False
-    use_old_docker_compose = False
+    docker_compose = _docker_compose_cmd()
+    subprocess.run(docker_compose + ["up", "-d", "--build"], cwd=work_dir)  # noqa: S603, S607
+    webbrowser.open_new("http://localhost:3000")
+
+
+def stop_local_server():
+    """
+    Start a local DigitalJS server.
+
+    This function requires docker compose installed.
+    """
+    work_dir = (Path(__file__).parent / "digitaljs").absolute()
+    docker_compose = _docker_compose_cmd()
+    subprocess.run(docker_compose + ["down"], cwd=work_dir)  # noqa: S603, S607
+
+
+def _docker_compose_cmd():
     try:
         res = subprocess.run(["docker", "compose", "version"], capture_output=True, text=True)  # noqa: S603, S607
         if res.returncode == 0:
-            use_new_docker_compose = True
+            return ["docker", "compose"]
     except FileNotFoundError:
         pass
 
-    if not use_new_docker_compose:
-        try:
-            res = subprocess.run(["docker-compose", "--version"], capture_output=True, text=True)  # noqa: S603, S607
-            if res.returncode == 0:
-                use_old_docker_compose = True
-        except FileNotFoundError:
-            pass
-
-    if not use_new_docker_compose and not use_old_docker_compose:
-        raise RuntimeError("docker compose is not installed")
-
-    if use_new_docker_compose:
-        subprocess.run(["docker", "compose", "up", "-d", "--build"], cwd=work_dir)  # noqa: S603, S607
-
-    if use_old_docker_compose:
-        subprocess.run(["docker-compose", "up", "-d", "--build"], cwd=work_dir)  # noqa: S603, S607
-    webbrowser.open_new("http://localhost:4000")
+    try:
+        res = subprocess.run(["docker-compose", "--version"], capture_output=True, text=True)  # noqa: S603, S607
+        if res.returncode == 0:
+            return ["docker-compose"]
+    except FileNotFoundError:
+        pass
+    raise RuntimeError("docker compose is not installed")
