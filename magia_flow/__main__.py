@@ -46,10 +46,22 @@ def online():
     ...
 
 
-@online.command()
+@online.group()
 def local_digitaljs():
+    """Commands related to local DigitalJS server"""
+    ...
+
+
+@local_digitaljs.group()
+def start():
     """Start a local DigitalJS server"""
     magia_flow.online.digitaljs.start_local_server()
+
+
+@local_digitaljs.group()
+def stop():
+    """Stop the local DigitalJS server"""
+    magia_flow.online.digitaljs.stop_local_server()
 
 
 if __name__ == "__main__":
