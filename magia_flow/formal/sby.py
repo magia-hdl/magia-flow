@@ -2,12 +2,12 @@ import os
 import shutil
 import string
 import subprocess
-import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Iterable, Literal
 
+import defusedxml.ElementTree as ElementTree
 from magia import Elaborator
 
 
@@ -64,7 +64,7 @@ class SbyTask:
         raw_result: str = field(repr=False)
         stdout: str = field(repr=False)
         stderr: str = field(repr=False)
-        tests: list[dict]
+        tests: list[dict] = field(repr=False)
         test_count: int
         failures: int
         errors: int
@@ -160,11 +160,11 @@ class SbyTask:
             raise ValueError("Run the task first")
         output_file = next(self.work_dir.rglob(f"**/*{self.spec.name}.xml"))
         raw_xml = output_file.read_text()
-        root = ET.fromstring(raw_xml)
+        root = ElementTree.fromstring(raw_xml)
 
         stdout = ""
         stderr = ""
-        success, errors, failures, skipped = 0, 0, 0, 0
+        errors, failures, skipped = 0, 0, 0
         tests = []
 
         for testsuite in root.iter("testsuite"):
@@ -175,7 +175,7 @@ class SbyTask:
                     "id": testcase.get("id", ""),
                     "classname": testcase.get("classname", ""),
                     "desc": testcase.get("name", ""),
-                    "loc": testcase.get("location", ""),
+                    "location": testcase.get("location", ""),
                     "status": "passed",
                     "info": {}
                 }

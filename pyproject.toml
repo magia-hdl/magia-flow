@@ -44,6 +44,7 @@ httpx = "*"
 click = "^8.1.7"
 flask = "^3.0.2"
 ruamel-yaml = "^0.18.6"
+defusedxml = "^0.7.1"
 
 [tool.poetry.group.dev.dependencies]
 cocotb = "*"
