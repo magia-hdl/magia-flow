@@ -72,10 +72,7 @@ class SbyTask:
 
     def __init__(self, top_module: str, mode="bmc", work_dir=None, **kwargs):
         self.spec = self.SbyTaskSpec(top_module=top_module, mode=mode)
-        self.work_dir: Path = work_dir
-        if self.work_dir is None:
-            self.work_dir = Path.cwd().absolute()
-
+        self.work_dir = Path.cwd().absolute() if work_dir is None else Path(work_dir).absolute()
         self._task_executed = False
         self._result = None
 

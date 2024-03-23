@@ -1,3 +1,5 @@
+from tempfile import TemporaryDirectory
+
 import pytest
 
 from magia_flow.formal import SbyTask, sby_installed
@@ -32,14 +34,15 @@ def test_sby_task_success():
     `endif
     endmodule
     """
-    task = SbyTask.from_code("oscillator", code)
-    task.run()
-    assert task.result.passed
-    test_passed = {
-        tc["id"] for tc in task.result.tests
-    }
-    assert "a_reset" in test_passed
-    assert "a_osc" in test_passed
+    with TemporaryDirectory(suffix="magia-sby-") as workdir:
+        task = SbyTask.from_code("oscillator", code, work_dir=workdir)
+        task.run()
+        assert task.result.passed
+        test_passed = {
+            tc["id"] for tc in task.result.tests
+        }
+        assert "a_reset" in test_passed
+        assert "a_osc" in test_passed
 
 
 @pytest.mark.skipif(not sby_installed(), reason="SymbiYosys not installed")
@@ -73,9 +76,10 @@ def test_sby_task_assertion_failure():
     `endif
     endmodule
     """
-    task = SbyTask.from_code("oscillator", code)
-    task.run()
-    assert not task.result.passed
-    for tc in task.result.tests:
-        if tc["id"] == "a_osc":
-            assert tc["status"] == "failed"
+    with TemporaryDirectory(suffix="magia-sby-") as workdir:
+        task = SbyTask.from_code("oscillator", code, work_dir=workdir)
+        task.run()
+        assert not task.result.passed
+        for tc in task.result.tests:
+            if tc["id"] == "a_osc":
+                assert tc["status"] == "failed"
