@@ -38,7 +38,7 @@ keywords = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 magia-hdl = "^0.5"
 httpx = "*"
 click = "^8.1.7"
