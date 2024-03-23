@@ -9,7 +9,7 @@ def test_sby_task_success():
     module oscillator (
         input  logic   clk,
         input  logic   reset,
-        output logic   pulse 
+        output logic   pulse
     );
     logic pulse_cur; assign pulse = pulse_cur;
     always_ff@(posedge clk)begin
@@ -48,7 +48,7 @@ def test_sby_task_assertion_failure():
     module oscillator (
         input  logic   clk,
         input  logic   reset,
-        output logic   pulse 
+        output logic   pulse
     );
     logic pulse_cur; assign pulse = pulse_cur;
     always_ff@(posedge clk)begin
